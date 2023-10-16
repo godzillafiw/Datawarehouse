@@ -25,8 +25,7 @@ ___
 
 ```bash
   git clone https://github.com/Nathnael12/DataEngineering_Datawarehouse_airflow.git
-  cd DataEngineering_Datawarehouse_airflow
-  pip install -r requirements.txt
+  cd Datawarehouse
   cd airflow
   docker-compose build
   docker-compose up -d
