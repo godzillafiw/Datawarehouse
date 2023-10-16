@@ -94,7 +94,7 @@ services:
       interval: 5s
       retries: 5
     restart: always
-    # command: 
+    # command:
     # - |
     #     echo "host all  all    0.0.0.0/0  md5" >> /var/lib/postgresql/data/pg_hba.conf
 
@@ -131,7 +131,7 @@ services:
       airflow-init:
         condition: service_completed_successfully
 
-  
+
   airflow-triggerer:
     <<: *airflow-common
     command: triggerer
@@ -153,7 +153,7 @@ services:
     command:
       - -c
       - |
-        
+
         function ver() {
           printf "%04d%04d%04d%04d" $${1//./ }
         }
@@ -238,9 +238,40 @@ services:
       - -c
       - airflow
 
+  data-warehouse:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: analytics
+    volumes:
+      - postgres-db-warehouse:/var/lib/postgresql/data
+      - ./setup/scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./setup/data:/data
+    ports:
+      - 5432:5432
+
+  sqlpad:
+    image: sqlpad/sqlpad:6.11.2
+    restart: always
+    depends_on:
+      - data-warehouse
+    environment:
+      SQLPAD_ADMIN: admin@admin.io
+      SQLPAD_ADMIN_PASSWORD: admin
+      SQLPAD_CONNECTIONS__pgdb__name: Analytics
+      SQLPAD_CONNECTIONS__pgdb__driver: postgres
+      SQLPAD_CONNECTIONS__pgdb__host: data-warehouse
+      SQLPAD_CONNECTIONS__pgdb__database: analytics
+      SQLPAD_CONNECTIONS__pgdb__username: postgres
+      SQLPAD_CONNECTIONS__pgdb__password: postgres
+    ports:
+      - 3000:3000
+
   # You can enable flower by adding "--profile flower" option e.g. docker-compose --profile flower up
   # or by explicitly targeted on the command line e.g. docker-compose up flower.
   # See: https://docs.docker.com/compose/profiles/
-  
+
 volumes:
   postgres-db-volume:
+  postgres-db-warehouse:

@@ -13,16 +13,16 @@ sys.path.insert(0,os.path.abspath(os.path.dirname(__file__)))
 from extractor import DataExtractor
 import db_util
 
-data_extractor=DataExtractor()
+data_extractor = DataExtractor()
 
 # def separate_data(ti):
 #     data_extractor.separate(file_name='20181024_d1_0830_0900.csv',number=5)
 
 def extract_data(ti):
 
-    loaded_df_name=data_extractor.extract_data(file_name='20181024_d1_0830_0900.csv',return_json=True)
+    loaded_df_name = data_extractor.extract_data(file_name='20181024_d1_0830_0900.csv',return_json=True)
     trajectory_file_name,vehicle_file_name=loaded_df_name
-   
+
     ti.xcom_push(key="trajectory",value=trajectory_file_name)
     ti.xcom_push(key="vehicle",value=vehicle_file_name)
 
@@ -75,26 +75,26 @@ with DAG(
     schedule_interval='@daily',
     catchup=False
 ) as dag:
-    
+
     read_data = PythonOperator(
         task_id='extract_from_file',
         python_callable = extract_data,
-    ) 
-    
+    )
+
     create_tables = PythonOperator(
         task_id='create_table',
         python_callable = create_table
     )
-    
+
     populate_vehicles = PythonOperator(
         task_id='load_vehicle_data',
         python_callable = populate__vehicles_table
     )
-    
+
     populate_trajectory = PythonOperator(
         task_id='load_trajectory_data',
         python_callable = populate_trajectory_table
-    ) 
+    )
 
     clear_temp_vehicle_data = PythonOperator(
         task_id='delete_temp_vehicle_files',
@@ -106,4 +106,4 @@ with DAG(
     )
 
     [read_data,create_tables]>>populate_vehicles>>clear_temp_vehicle_data,populate_vehicles>>populate_trajectory>>clear_temp_trajectory_data
-    
+

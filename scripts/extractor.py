@@ -3,14 +3,14 @@ from logger import Logger
 import sys
 from datetime import datetime
 class DataExtractor():
-    
+
     def __init__(self)->None:
         try:
             self.logger=Logger().get_app_logger()
             self.logger.info('Data extractor object Initialized')
         except:
             pass
-    
+
     def get_columns_and_rows(self,file_path)->tuple:
         try:
             with open(f'../data/{file_path}','r') as f:
@@ -26,7 +26,7 @@ class DataExtractor():
             except:
                 pass
             sys.exit(1)
-    
+
     def chunk_list(self,list,chunk_size,default_first_val=None)->list:
         chunked_list=[]
         for i in range(0, len(list), chunk_size):
@@ -59,7 +59,7 @@ class DataExtractor():
                         self.logger.error(f"Failed preparing data for pands at row {row}: {e}")
                     except:
                         pass
-            
+
             return (trajectory_cols,trajectory_rows),(timed_vehicle_cols,timed_vehicle_rows)
         except Exception as e:
             # the try excepts here are for the airflow
@@ -67,7 +67,7 @@ class DataExtractor():
                 self.logger.error(f"Failed to prepare data for pandas: {e}")
             except:
                 pass
-    
+
     def prepare_data_frame(self,trajectory_data:tuple,timed_vehicle_data:tuple):
 
         try:
@@ -94,11 +94,11 @@ class DataExtractor():
             trajectory_data, timed_vehicle_data=self.prepare_data_for_pandas(columns=columns,all_data=all_data,id_prefix=id_prefix)
             if not return_json:
                 return self.prepare_data_frame(trajectory_data,timed_vehicle_data)
-            
+
             tr,vh= self.prepare_data_frame(trajectory_data,timed_vehicle_data)
-            
-            tr_file_name= str(datetime.today()).replace(' ','_')+"trajectory.json"
-            vh_file_name= str(datetime.today()).replace(' ','_')+"vehicle_data.json"
+
+            tr_file_name= str(datetime.today()).replace(' ','_')+"_trajectory.json"
+            vh_file_name= str(datetime.today()).replace(' ','_')+"_vehicle_data.json"
 
             tr.to_json(f'../temp_storage/{tr_file_name}',orient='records')
             vh.to_json(f'../temp_storage/{vh_file_name}',orient='records')

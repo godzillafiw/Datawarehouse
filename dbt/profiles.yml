@@ -5,22 +5,22 @@ traffic:
       type: postgres
       threads: 10
       host: host.docker.internal
-      port: 8585
-      user: airflow
-      pass: airflow
-      dbname: postgres
+      port: 5432
+      user: postgres
+      pass: postgres
+      dbname: analytics
       schema: public
 
     prod:
       type: postgres
       threads: 10
       host: host.docker.internal
-      port: 8585
-      user: airflow
-      pass: airflow
-      dbname: postgres
+      port: 5432
+      user: postgres
+      pass: postgres
+      dbname: analytics
       schema: public
-      
+
   target: dev
 
 
@@ -31,10 +31,10 @@ traffic_data:
       type: postgres
       threads: 10
       host: host.docker.internal
-      port: 8585
-      user: airflow
-      pass: airflow
-      dbname: postgres
+      port: 5432
+      user: postgres
+      pass: postgres
+      dbname: analytics
       schema: public
 
     prod:

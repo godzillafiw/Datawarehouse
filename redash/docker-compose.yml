@@ -42,11 +42,14 @@ services:
       - ./postgres-data:/var/lib/postgresql/data
     restart: always
     environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
       POSTGRES_HOST_AUTH_METHOD: trust 
     ports:
       - "5433:5432"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    #extra_hosts:
+    #  - "host.docker.internal:host-gateway"
   nginx:
     image: redash/nginx:latest
     ports:
